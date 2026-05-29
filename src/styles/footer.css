@@ -1,0 +1,25 @@
+.footer {
+  text-align: center;
+  padding: 48px 20px;
+  border-top: 1px solid rgba(183, 0, 255, 0.1);
+  color: var(--text-muted);
+}
+
+.footer-logo {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: 20px;
+  color: var(--neon-purple);
+  margin-bottom: 10px;
+}
+
+.footer-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.footer-credit {
+  font-size: 12px;
+  color: rgba(100, 100, 130, 0.5);
+}

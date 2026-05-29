@@ -1,0 +1,174 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(10px);
+  animation: slide-down 0.3s ease;
+}
+
+.modal-card {
+  background: linear-gradient(160deg, rgba(8, 4, 24, 0.99), rgba(18, 4, 36, 0.99));
+  border: 1px solid rgba(183, 0, 255, 0.55);
+  border-radius: 20px;
+  padding: 48px 52px;
+  text-align: center;
+  max-width: 500px;
+  width: 92%;
+  box-shadow: 0 0 80px rgba(183, 0, 255, 0.4), 0 0 160px rgba(255, 26, 26, 0.1);
+  animation: slide-up 0.4s ease;
+}
+
+.modal-trophy {
+  font-size: 72px;
+  margin-bottom: 18px;
+  animation: float 2.5s ease infinite;
+}
+
+.modal-title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: 24px;
+  color: var(--neon-purple);
+  margin-bottom: 10px;
+  text-shadow: 0 0 30px rgba(183, 0, 255, 0.8);
+  letter-spacing: 2px;
+}
+
+.modal-squad {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  color: var(--neon-red);
+  margin-bottom: 8px;
+  text-shadow: 0 0 20px rgba(255, 26, 26, 0.5);
+}
+
+.modal-desc {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 32px;
+  line-height: 1.7;
+}
+
+.modal-tags {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+.modal-tag {
+  font-size: 12px;
+  padding: 7px 16px;
+  border-radius: 24px;
+  background: rgba(183, 0, 255, 0.09);
+  border: 1px solid rgba(183, 0, 255, 0.3);
+  color: var(--neon-purple);
+}
+
+.modal-close {
+  padding: 13px 44px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-red));
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  letter-spacing: 2px;
+  box-shadow: 0 0 30px rgba(183, 0, 255, 0.4);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.modal-close:hover {
+  box-shadow: 0 0 50px rgba(183, 0, 255, 0.7);
+  transform: scale(1.04);
+}
+
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(10px);
+}
+
+.confirm-card {
+  background: rgba(8, 4, 24, 0.98);
+  border: 1px solid rgba(255, 26, 26, 0.4);
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  max-width: 380px;
+  width: 92%;
+  box-shadow: 0 0 70px rgba(255, 26, 26, 0.3);
+  animation: slide-up 0.3s ease;
+}
+
+.confirm-icon {
+  font-size: 52px;
+  margin-bottom: 16px;
+}
+
+.confirm-title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--neon-red);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.confirm-text {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 30px;
+  line-height: 1.65;
+}
+
+.confirm-btns {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+}
+
+.confirm-cancel,
+.confirm-delete {
+  padding: 11px 28px;
+  border-radius: 9px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.confirm-cancel {
+  background: rgba(183, 0, 255, 0.1);
+  border: 1px solid rgba(183, 0, 255, 0.35);
+  color: var(--neon-purple);
+}
+
+.confirm-cancel:hover {
+  background: rgba(183, 0, 255, 0.2);
+}
+
+.confirm-delete {
+  background: rgba(255, 26, 26, 0.15);
+  border: 1px solid rgba(255, 26, 26, 0.45);
+  color: var(--neon-red);
+}
+
+.confirm-delete:hover {
+  background: rgba(255, 26, 26, 0.28);
+  box-shadow: 0 0 20px rgba(255, 26, 26, 0.3);
+}

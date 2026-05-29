@@ -1,0 +1,102 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 100px 20px 60px;
+  overflow: hidden;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  padding: 8px 22px;
+  border: 1px solid rgba(255, 107, 0, 0.45);
+  border-radius: 30px;
+  background: rgba(255, 107, 0, 0.07);
+}
+
+.hero-badge-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--neon-orange);
+  box-shadow: 0 0 12px var(--neon-orange);
+  animation: pulse-red 1.5s ease infinite;
+}
+
+.hero-title-line {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: clamp(38px, 9vw, 96px);
+  line-height: 1.0;
+  letter-spacing: -1px;
+}
+
+.hero-title-gradient {
+  background: linear-gradient(135deg, var(--neon-red) 0%, #cc00ff 50%, var(--neon-red) 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 3s ease infinite, neon-flicker 8s ease infinite;
+}
+
+.hero-desc {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(15px, 3vw, 20px);
+  color: var(--text-muted);
+  max-width: 580px;
+  margin: 0 auto 44px;
+  line-height: 1.65;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  max-width: 100%;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.hero-stat {
+  padding: 22px 16px;
+  border-radius: 14px;
+  background: rgba(183, 0, 255, 0.04);
+  border: 1px solid rgba(183, 0, 255, 0.2);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s;
+}
+
+.hero-stat:hover {
+  border-color: rgba(183, 0, 255, 0.5);
+  background: rgba(183, 0, 255, 0.08);
+  transform: translateY(-4px);
+  box-shadow: 0 0 30px rgba(183, 0, 255, 0.2);
+}
+
+.hero-stat-icon {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.hero-stat-val {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--neon-purple);
+  margin-bottom: 4px;
+}
+
+.hero-stat-lbl {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}

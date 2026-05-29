@@ -1,0 +1,103 @@
+.reg-section {
+  padding: 70px 20px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.reg-card {
+  background: rgba(8, 4, 20, 0.9);
+  border: 1px solid rgba(183, 0, 255, 0.3);
+  border-radius: 18px;
+  padding: 40px;
+  backdrop-filter: blur(24px);
+  box-shadow:
+    0 0 60px rgba(183, 0, 255, 0.08),
+    0 0 120px rgba(255, 26, 26, 0.04),
+    inset 0 0 40px rgba(183, 0, 255, 0.02);
+  animation: border-glow 4s ease infinite;
+  position: relative;
+}
+
+.reg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0 28px;
+}
+
+.field {
+  margin-bottom: 22px;
+}
+
+.field-label {
+  display: block;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--neon-purple);
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.field-input {
+  width: 100%;
+  padding: 13px 18px;
+  border-radius: 10px;
+  background: rgba(8, 4, 22, 0.8);
+  border: 1px solid rgba(183, 0, 255, 0.25);
+  color: var(--text-primary);
+  font-family: 'Exo 2', sans-serif;
+  font-size: 15px;
+  transition: all 0.3s;
+}
+
+.field-input:focus {
+  border-color: var(--neon-purple);
+  box-shadow: 0 0 0 3px rgba(183, 0, 255, 0.1), 0 0 20px rgba(183, 0, 255, 0.15);
+  background: rgba(12, 6, 30, 0.9);
+}
+
+.field-input.error {
+  border-color: var(--neon-red);
+  box-shadow: 0 0 0 3px rgba(255, 26, 26, 0.08);
+}
+
+.field-error {
+  color: var(--neon-red);
+  font-size: 12px;
+  margin-top: 5px;
+  font-family: 'Rajdhani', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 18px;
+  border-radius: 12px;
+  margin-top: 12px;
+  background: linear-gradient(135deg, #ff1a1a 0%, #8800dd 50%, #ff1a1a 100%);
+  background-size: 200% 200%;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #fff;
+  letter-spacing: 2.5px;
+  box-shadow: 0 0 40px rgba(183, 0, 255, 0.35);
+  transition: all 0.3s;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+}
+
+.submit-btn:hover:not(:disabled) {
+  animation: gradient-shift 1.5s ease infinite;
+  box-shadow: 0 0 60px rgba(183, 0, 255, 0.6), 0 0 100px rgba(255, 26, 26, 0.3);
+  transform: translateY(-2px);
+}
+
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

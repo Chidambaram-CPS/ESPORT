@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Free Fire Esports – Squad Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+
+
+<style>
+/* ============================================================
+   GLOBAL RESET & ROOT VARIABLES
+   ============================================================ */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body,#root{height:100%;width:100%;background:#000}
+:root{
+  --neon-red:#ff1a1a;
+  --neon-purple:#b700ff;
+  --neon-cyan:#00f5ff;
+  --neon-orange:#ff6b00;
+  --neon-gold:#ffd700;
+  --dark-bg:#050508;
+  --card-bg:rgba(10,8,20,0.85);
+  --border-glow:rgba(183,0,255,0.4);
+  --text-primary:#f0eaff;
+  --text-muted:#8888aa;
+}
+body{font-family:'Exo 2',sans-serif;color:var(--text-primary);overflow-x:hidden;background:var(--dark-bg)}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:#0a0810}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--neon-purple),var(--neon-red));border-radius:3px}
+
+/* ============================================================
+   FORM ELEMENT RESETS
+   ============================================================ */
+input,select,textarea{outline:none;font-family:'Exo 2',sans-serif}
+button{cursor:pointer;border:none;background:none;font-family:'Exo 2',sans-serif}
+
+/* ============================================================
+   KEYFRAME ANIMATIONS
+   ============================================================ */
+@keyframes scanline{
+  0%{transform:translateY(-100%)}
+  100%{transform:translateY(100vh)}
+}
+@keyframes pulse-glow{
+  0%,100%{box-shadow:0 0 10px var(--neon-purple),0 0 30px rgba(183,0,255,0.3)}
+  50%{box-shadow:0 0 25px var(--neon-purple),0 0 70px rgba(183,0,255,0.6),0 0 120px rgba(183,0,255,0.2)}
+}
+@keyframes pulse-red{
+  0%,100%{box-shadow:0 0 10px var(--neon-red),0 0 30px rgba(255,26,26,0.3)}
+  50%{box-shadow:0 0 25px var(--neon-red),0 0 70px rgba(255,26,26,0.6)}
+}
+@keyframes slide-up{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes slide-down{
+  from{opacity:0;transform:translateY(-20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes neon-flicker{
+  0%,100%{opacity:1}
+  92%{opacity:1}93%{opacity:0.4}94%{opacity:1}98%{opacity:0.85}99%{opacity:1}
+}
+@keyframes neon-text-red{
+  0%,100%{text-shadow:0 0 10px var(--neon-red),0 0 30px rgba(255,26,26,0.5)}
+  50%{text-shadow:0 0 20px var(--neon-red),0 0 60px rgba(255,26,26,0.8),0 0 100px rgba(255,26,26,0.3)}
+}
+@keyframes toast-in{
+  from{opacity:0;transform:translateX(120px)}
+  to{opacity:1;transform:translateX(0)}
+}
+@keyframes toast-out{
+  from{opacity:1;transform:translateX(0)}
+  to{opacity:0;transform:translateX(120px)}
+}
+@keyframes float{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  50%{transform:translateY(-14px) rotate(3deg)}
+}
+@keyframes spin-slow{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+@keyframes border-glow{
+  0%,100%{border-color:rgba(183,0,255,0.3)}
+  50%{border-color:rgba(183,0,255,0.8)}
+}
+@keyframes gradient-shift{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@keyframes ripple{
+  0%{transform:scale(1);opacity:1}
+  100%{transform:scale(2.5);opacity:0}
+}
+@keyframes count-up{
+  from{opacity:0;transform:scale(0.8)}
+  to{opacity:1;transform:scale(1)}
+}
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+.neon-purple{color:var(--neon-purple)}
+.neon-red{color:var(--neon-red)}
+.font-orbitron{font-family:'Orbitron',sans-serif}
+.font-rajdhani{font-family:'Rajdhani',sans-serif}
+.glassmorphism{
+  background:rgba(10,5,25,0.75);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(183,0,255,0.25);
+  border-radius:16px;
+}
+.btn-primary{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 36px;border-radius:10px;
+  background:linear-gradient(135deg,var(--neon-red),#9900dd);
+  font-family:'Orbitron',sans-serif;font-weight:700;font-size:14px;
+  color:#fff;letter-spacing:2px;text-transform:uppercase;
+  box-shadow:0 0 30px rgba(183,0,255,0.4);
+  transition:all 0.3s ease;border:none;cursor:pointer;
+}
+.btn-primary:hover{
+  box-shadow:0 0 50px rgba(183,0,255,0.7),0 0 80px rgba(255,26,26,0.3);
+  transform:translateY(-2px) scale(1.02);
+}
+.btn-secondary{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 36px;border-radius:10px;
+  background:transparent;
+  border:1px solid rgba(183,0,255,0.5);
+  font-family:'Orbitron',sans-serif;font-weight:700;font-size:14px;
+  color:var(--neon-purple);letter-spacing:2px;text-transform:uppercase;
+  transition:all 0.3s ease;cursor:pointer;
+}
+.btn-secondary:hover{
+  background:rgba(183,0,255,0.1);
+  box-shadow:0 0 25px rgba(183,0,255,0.3);
+  transform:translateY(-2px);
+}
+
+/* ============================================================
+   SECTION HEADINGS
+   ============================================================ */
+.section-title{
+  font-family:'Orbitron',sans-serif;font-weight:900;
+  font-size:clamp(22px,4vw,36px);
+  color:#fff;text-align:center;
+  margin-bottom:8px;
+}
+.section-sub{
+  font-family:'Rajdhani',sans-serif;font-size:16px;
+  color:var(--text-muted);text-align:center;margin-bottom:40px;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:14px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  background:rgba(5,5,8,0.75);
+  border-bottom:1px solid rgba(183,0,255,0.15);
+}
+.nav-logo{
+  font-family:'Orbitron',sans-serif;font-weight:900;font-size:20px;
+  display:flex;align-items:center;gap:4px;
+}
+.nav-links{display:flex;gap:12px;align-items:center}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  position:relative;min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:100px 20px 60px;
+  overflow:hidden;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-bottom:28px;padding:8px 22px;
+  border:1px solid rgba(255,107,0,0.45);border-radius:30px;
+  background:rgba(255,107,0,0.07);
+}
+.hero-badge-dot{
+  width:9px;height:9px;border-radius:50%;
+  background:var(--neon-orange);
+  box-shadow:0 0 12px var(--neon-orange);
+  animation:pulse-red 1.5s ease infinite;
+}
+.hero-title-line{
+  font-family:'Orbitron',sans-serif;font-weight:900;
+  font-size:clamp(38px,9vw,96px);
+  line-height:1.0;letter-spacing:-1px;
+}
+.hero-title-gradient{
+  background:linear-gradient(135deg,var(--neon-red) 0%,#cc00ff 50%,var(--neon-red) 100%);
+  background-size:200% 200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:gradient-shift 3s ease infinite, neon-flicker 8s ease infinite;
+}
+.hero-desc{
+  font-family:'Rajdhani',sans-serif;
+  font-size:clamp(15px,3vw,20px);
+  color:var(--text-muted);max-width:580px;
+  margin:0 auto 44px;line-height:1.65;
+}
+.hero-stats{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:16px;max-width:100%;margin:0 auto;
+  width:100%;
+}
+.hero-stat{
+  padding:22px 16px;border-radius:14px;
+  background:rgba(183,0,255,0.04);
+  border:1px solid rgba(183,0,255,0.2);
+  backdrop-filter:blur(10px);
+  transition:all 0.3s;
+}
+.hero-stat:hover{
+  border-color:rgba(183,0,255,0.5);
+  background:rgba(183,0,255,0.08);
+  transform:translateY(-4px);
+  box-shadow:0 0 30px rgba(183,0,255,0.2);
+}
+.hero-stat-icon{font-size:30px;margin-bottom:10px}
+.hero-stat-val{
+  font-family:'Orbitron',sans-serif;font-weight:700;
+  font-size:18px;color:var(--neon-purple);margin-bottom:4px;
+}
+.hero-stat-lbl{
+  font-size:11px;color:var(--text-muted);
+  text-transform:uppercase;letter-spacing:1.5px;
+}
+
+/* ============================================================
+   PRIZE SECTION
+   ============================================================ */
+.prize-section{padding:70px 20px;max-width:960px;margin:0 auto}
+.prize-cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;
+}
+.prize-card{
+  padding:32px 20px;border-radius:14px;text-align:center;
+  background:rgba(10,5,20,0.85);
+  backdrop-filter:blur(12px);
+  transition:all 0.3s;position:relative;overflow:hidden;
+}
+.prize-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,currentColor,transparent);
+}
+.prize-card:hover{transform:translateY(-6px)}
+.prize-icon{font-size:44px;margin-bottom:14px}
+.prize-rank{
+  font-family:'Rajdhani',sans-serif;font-weight:600;
+  font-size:12px;color:var(--text-muted);
+  text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;
+}
+.prize-amount{
+  font-family:'Orbitron',sans-serif;font-weight:900;
+  font-size:clamp(22px,4vw,32px);color:#fff;
+}
+
+/* ============================================================
+   HOW IT WORKS
+   ============================================================ */
+.how-section{padding:60px 20px;max-width:900px;margin:0 auto}
+.how-steps{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;margin-top:40px;
+}
+.how-step{
+  padding:28px 20px;border-radius:14px;text-align:center;
+  background:rgba(10,5,25,0.6);
+  border:1px solid rgba(183,0,255,0.15);
+  position:relative;overflow:hidden;
+  transition:all 0.3s;
+}
+.how-step:hover{border-color:rgba(183,0,255,0.4);background:rgba(183,0,255,0.05)}
+.how-step-num{
+  font-family:'Orbitron',sans-serif;font-weight:900;font-size:40px;
+  color:rgba(183,0,255,0.15);
+  position:absolute;top:10px;right:14px;
+}
+.how-step-icon{font-size:36px;margin-bottom:12px}
+.how-step-title{
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;
+  color:var(--neon-purple);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;
+}
+.how-step-desc{font-size:13px;color:var(--text-muted);line-height:1.6}
+
+/* ============================================================
+   REGISTRATION FORM
+   ============================================================ */
+.reg-section{padding:70px 20px;max-width:720px;margin:0 auto}
+.reg-card{
+  background:rgba(8,4,20,0.9);
+  border:1px solid rgba(183,0,255,0.3);
+  border-radius:18px;padding:40px;
+  backdrop-filter:blur(24px);
+  box-shadow:
+    0 0 60px rgba(183,0,255,0.08),
+    0 0 120px rgba(255,26,26,0.04),
+    inset 0 0 40px rgba(183,0,255,0.02);
+  animation:border-glow 4s ease infinite;
+}
+.reg-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:0 28px;
+}
+.field{margin-bottom:22px}
+.field-label{
+  display:block;font-family:'Rajdhani',sans-serif;font-weight:700;
+  font-size:12px;color:var(--neon-purple);
+  letter-spacing:2.5px;text-transform:uppercase;margin-bottom:8px;
+}
+.field-input{
+  width:100%;padding:13px 18px;border-radius:10px;
+  background:rgba(8,4,22,0.8);
+  border:1px solid rgba(183,0,255,0.25);
+  color:var(--text-primary);font-family:'Exo 2',sans-serif;font-size:15px;
+  transition:all 0.3s;
+}
+.field-input:focus{
+  border-color:var(--neon-purple);
+  box-shadow:0 0 0 3px rgba(183,0,255,0.1),0 0 20px rgba(183,0,255,0.15);
+  background:rgba(12,6,30,0.9);
+}
+.field-input.error{border-color:var(--neon-red);box-shadow:0 0 0 3px rgba(255,26,26,0.08)}
+.field-error{
+  color:var(--neon-red);font-size:12px;margin-top:5px;
+  font-family:'Rajdhani',sans-serif;display:flex;align-items:center;gap:4px;
+}
+.submit-btn{
+  width:100%;padding:18px;border-radius:12px;margin-top:12px;
+  background:linear-gradient(135deg,#ff1a1a 0%,#8800dd 50%,#ff1a1a 100%);
+  background-size:200% 200%;
+  font-family:'Orbitron',sans-serif;font-weight:700;font-size:16px;
+  color:#fff;letter-spacing:2.5px;
+  box-shadow:0 0 40px rgba(183,0,255,0.35);
+  transition:all 0.3s;text-transform:uppercase;
+  border:none;cursor:pointer;
+}
+.submit-btn:hover:not(:disabled){
+  animation:gradient-shift 1.5s ease infinite;
+  box-shadow:0 0 60px rgba(183,0,255,0.6),0 0 100px rgba(255,26,26,0.3);
+  transform:translateY(-2px);
+}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed}
+
+/* ============================================================
+   SUCCESS MODAL
+   ============================================================ */
+.modal-overlay{
+  position:fixed;inset:0;z-index:500;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.88);
+  backdrop-filter:blur(10px);
+  animation:slide-down 0.3s ease;
+}
+.modal-card{
+  background:linear-gradient(160deg,rgba(8,4,24,0.99),rgba(18,4,36,0.99));
+  border:1px solid rgba(183,0,255,0.55);
+  border-radius:20px;padding:48px 52px;text-align:center;
+  max-width:500px;width:92%;
+  box-shadow:0 0 80px rgba(183,0,255,0.4),0 0 160px rgba(255,26,26,0.1);
+  animation:slide-up 0.4s ease;
+}
+.modal-trophy{font-size:72px;margin-bottom:18px;animation:float 2.5s ease infinite}
+.modal-title{
+  font-family:'Orbitron',sans-serif;font-weight:900;font-size:24px;
+  color:var(--neon-purple);margin-bottom:10px;
+  text-shadow:0 0 30px rgba(183,0,255,0.8);
+  letter-spacing:2px;
+}
+.modal-squad{
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:30px;
+  color:var(--neon-red);margin-bottom:8px;
+  text-shadow:0 0 20px rgba(255,26,26,0.5);
+}
+.modal-desc{color:var(--text-muted);font-size:14px;margin-bottom:32px;line-height:1.7}
+.modal-tags{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:32px}
+.modal-tag{
+  font-size:12px;padding:7px 16px;border-radius:24px;
+  background:rgba(183,0,255,0.09);
+  border:1px solid rgba(183,0,255,0.3);color:var(--neon-purple);
+}
+.modal-close{
+  padding:13px 44px;border-radius:10px;
+  background:linear-gradient(135deg,var(--neon-purple),var(--neon-red));
+  font-family:'Orbitron',sans-serif;font-weight:700;font-size:14px;
+  color:#fff;letter-spacing:2px;box-shadow:0 0 30px rgba(183,0,255,0.4);
+  border:none;cursor:pointer;transition:all 0.3s;
+}
+.modal-close:hover{box-shadow:0 0 50px rgba(183,0,255,0.7);transform:scale(1.04)}
+
+/* ============================================================
+   TOAST NOTIFICATIONS
+   ============================================================ */
+.toast-container{
+  position:fixed;top:22px;right:22px;z-index:999;
+  display:flex;flex-direction:column;gap:12px;
+  pointer-events:none;
+}
+.toast{
+  padding:14px 20px;border-radius:10px;
+  min-width:290px;max-width:360px;
+  backdrop-filter:blur(14px);
+  animation:toast-in 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events:all;cursor:pointer;
+  display:flex;align-items:center;gap:12px;
+}
+.toast-icon{font-size:22px;flex-shrink:0}
+.toast-title{
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;
+  margin-bottom:2px;
+}
+.toast-msg{font-size:12px;color:var(--text-muted)}
+.toast-success{
+  background:rgba(0,255,100,0.07);
+  border:1px solid rgba(0,255,100,0.35);
+  box-shadow:0 0 25px rgba(0,255,100,0.2);
+}
+.toast-error{
+  background:rgba(255,26,26,0.07);
+  border:1px solid rgba(255,26,26,0.35);
+  box-shadow:0 0 25px rgba(255,26,26,0.2);
+}
+.toast-info{
+  background:rgba(183,0,255,0.07);
+  border:1px solid rgba(183,0,255,0.35);
+  box-shadow:0 0 25px rgba(183,0,255,0.2);
+}
+
+/* ============================================================
+   ADMIN PANEL
+   ============================================================ */
+.admin-wrapper{min-height:100vh;padding:24px 20px;max-width:1300px;margin:0 auto}
+.admin-header{
+  display:flex;align-items:center;gap:20px;
+  margin-bottom:32px;flex-wrap:wrap;
+}
+.admin-back{
+  padding:10px 20px;border-radius:8px;
+  background:rgba(183,0,255,0.09);
+  border:1px solid rgba(183,0,255,0.3);color:var(--neon-purple);
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;
+  cursor:pointer;transition:all 0.2s;
+}
+.admin-back:hover{background:rgba(183,0,255,0.18)}
+.admin-title-block{}
+.admin-title{
+  font-family:'Orbitron',sans-serif;font-weight:900;
+  font-size:clamp(18px,4vw,28px);color:#fff;
+}
+.admin-subtitle{
+  font-family:'Rajdhani',sans-serif;font-size:14px;color:var(--text-muted);margin-top:2px;
+}
+.admin-controls{
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px;
+}
+.admin-search-wrap{position:relative;flex:1;min-width:240px}
+.admin-search-icon{
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  font-size:18px;color:var(--text-muted);pointer-events:none;
+}
+.admin-search{
+  width:100%;padding:12px 16px 12px 44px;border-radius:10px;
+  background:rgba(8,4,22,0.8);
+  border:1px solid rgba(183,0,255,0.25);
+  color:var(--text-primary);font-family:'Exo 2',sans-serif;font-size:15px;
+  transition:all 0.3s;
+}
+.admin-search:focus{border-color:var(--neon-purple);box-shadow:0 0 0 3px rgba(183,0,255,0.08)}
+.filter-group{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filter-label{
+  font-family:'Rajdhani',sans-serif;font-weight:600;font-size:13px;
+  color:var(--neon-purple);letter-spacing:2px;text-transform:uppercase;
+}
+.filter-btn{
+  padding:8px 14px;border-radius:7px;
+  font-family:'Rajdhani',sans-serif;font-weight:600;font-size:13px;
+  text-transform:uppercase;letter-spacing:0.5px;
+  background:transparent;
+  border:1px solid rgba(183,0,255,0.2);
+  color:var(--text-muted);
+  cursor:pointer;transition:all 0.2s;
+}
+.filter-btn.active{
+  background:rgba(183,0,255,0.2);
+  border-color:var(--neon-purple);
+  color:var(--neon-purple);
+  box-shadow:0 0 12px rgba(183,0,255,0.2);
+}
+.filter-btn:hover:not(.active){background:rgba(183,0,255,0.08);color:var(--text-primary)}
+
+/* Stats bar */
+.stats-bar{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:12px;margin-bottom:24px;
+}
+.stat-card{
+  padding:16px 18px;border-radius:10px;
+  background:rgba(183,0,255,0.04);
+  border:1px solid rgba(183,0,255,0.15);
+}
+.stat-card-val{
+  font-family:'Orbitron',sans-serif;font-weight:700;font-size:24px;
+  color:var(--neon-purple);margin-bottom:4px;
+}
+.stat-card-lbl{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+
+/* Table */
+.table-wrap{overflow-x:auto;border-radius:12px;border:1px solid rgba(183,0,255,0.15)}
+.reg-table{width:100%;border-collapse:collapse;min-width:700px}
+.reg-table th{
+  padding:14px 16px;text-align:left;
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;
+  color:var(--neon-purple);letter-spacing:2.5px;text-transform:uppercase;
+  background:rgba(183,0,255,0.06);
+  border-bottom:1px solid rgba(183,0,255,0.2);
+  white-space:nowrap;
+}
+.reg-table td{
+  padding:14px 16px;border-bottom:1px solid rgba(183,0,255,0.07);
+  font-size:14px;color:var(--text-primary);vertical-align:middle;
+}
+.reg-table tr:last-child td{border-bottom:none}
+.reg-table tbody tr{
+  transition:background 0.2s;
+  animation:slide-up 0.3s ease;
+  animation-fill-mode:backwards;
+}
+.reg-table tbody tr:hover{background:rgba(183,0,255,0.04)}
+.squad-name{
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;
+  color:#fff;
+}
+.uid-text{font-family:'Courier New',monospace;color:var(--neon-cyan);font-size:13px}
+.players-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:4px 12px;border-radius:24px;
+  background:rgba(183,0,255,0.12);
+  border:1px solid rgba(183,0,255,0.3);
+  color:var(--neon-purple);
+  font-family:'Orbitron',sans-serif;font-weight:700;font-size:11px;
+}
+.time-text{font-size:12px;color:var(--text-muted)}
+.delete-btn{
+  padding:7px 12px;border-radius:7px;
+  background:rgba(255,26,26,0.08);
+  border:1px solid rgba(255,26,26,0.3);
+  color:var(--neon-red);font-size:16px;
+  cursor:pointer;transition:all 0.2s;
+}
+.delete-btn:hover{background:rgba(255,26,26,0.2);box-shadow:0 0 15px rgba(255,26,26,0.3)}
+.empty-state{
+  text-align:center;padding:80px 20px;
+}
+.empty-icon{font-size:52px;margin-bottom:16px}
+.empty-text{font-family:'Rajdhani',sans-serif;font-size:18px;color:var(--text-muted)}
+
+/* Confirm modal */
+.confirm-overlay{
+  position:fixed;inset:0;z-index:600;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);
+}
+.confirm-card{
+  background:rgba(8,4,24,0.98);
+  border:1px solid rgba(255,26,26,0.4);border-radius:16px;
+  padding:40px;text-align:center;max-width:380px;width:92%;
+  box-shadow:0 0 70px rgba(255,26,26,0.3);
+  animation:slide-up 0.3s ease;
+}
+.confirm-icon{font-size:52px;margin-bottom:16px}
+.confirm-title{
+  font-family:'Orbitron',sans-serif;font-weight:700;font-size:20px;
+  color:var(--neon-red);margin-bottom:12px;letter-spacing:1px;
+}
+.confirm-text{color:var(--text-muted);font-size:14px;margin-bottom:30px;line-height:1.65}
+.confirm-btns{display:flex;gap:14px;justify-content:center}
+.confirm-cancel{
+  padding:11px 28px;border-radius:9px;
+  background:rgba(183,0,255,0.1);
+  border:1px solid rgba(183,0,255,0.35);
+  color:var(--neon-purple);
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;
+  cursor:pointer;transition:all 0.2s;
+}
+.confirm-cancel:hover{background:rgba(183,0,255,0.2)}
+.confirm-delete{
+  padding:11px 28px;border-radius:9px;
+  background:rgba(255,26,26,0.15);
+  border:1px solid rgba(255,26,26,0.45);
+  color:var(--neon-red);
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;
+  cursor:pointer;transition:all 0.2s;
+}
+.confirm-delete:hover{background:rgba(255,26,26,0.28);box-shadow:0 0 20px rgba(255,26,26,0.3)}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer{
+  text-align:center;padding:48px 20px;
+  border-top:1px solid rgba(183,0,255,0.1);
+  color:var(--text-muted);
+}
+.footer-logo{
+  font-family:'Orbitron',sans-serif;font-weight:900;font-size:20px;
+  color:var(--neon-purple);margin-bottom:10px;
+}
+.footer-text{font-family:'Rajdhani',sans-serif;font-size:15px;margin-bottom:8px}
+.footer-credit{font-size:12px;color:rgba(100,100,130,0.5)}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:640px){
+  .nav{padding:12px 16px}
+  .nav-logo{font-size:16px}
+  .reg-card{padding:24px 18px}
+  .modal-card{padding:36px 24px}
+  .admin-wrapper{padding:16px 12px}
+  .admin-header{gap:12px}
+  .filter-group{gap:6px}
+}
+@media(max-width:480px){
+  .hero{padding:80px 16px 40px}
+  .prize-section,.how-section,.reg-section{padding:50px 16px}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+// ================================================================
+// FIREBASE CONFIGURATION
+// Replace with your actual Firebase project credentials.
+// Get these from: Firebase Console → Project Settings → Your Apps
+// ================================================================
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyYOUR_API_KEY_HERE",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "000000000000",
+  appId: "1:000000000000:web:your_app_id"
+};
+
+// ================================================================
+// DEMO MODE
+// Set to false and configure FIREBASE_CONFIG to use real Firestore.
+// When false, data persists in Firestore and survives page refresh.
+// When true, data is stored in memory only (resets on refresh).
+// ================================================================
+const DEMO_MODE = true;
+
+// ================================================================
+// DEMO DATA – sample registrations for preview
+// ================================================================
+let DEMO_DB = [
+  { id:'d1', squadName:'Shadow Wolves',  leaderName:'Raven_X',     uid:'123456789', igName:'RavenX_FF',   phone:'9876543210', players:'4', teamMembers:['Phoenix_Y', 'Storm_Z', 'Shadow_W'], paymentStatus:'paid', competitionAllowed:true, time: new Date(Date.now()-3*3600000).toISOString() },
+  { id:'d2', squadName:'Phoenix Squad',  leaderName:'BlazeMaster',  uid:'987654321', igName:'BlazeMstr99', phone:'8765432109', players:'4', teamMembers:['FireKing', 'HeatWave', 'Blaze_Q'], paymentStatus:'paid', competitionAllowed:true, time: new Date(Date.now()-6*3600000).toISOString() },
+  { id:'d3', squadName:'Dark Hunters',   leaderName:'NightStrike',  uid:'456789123', igName:'NightStr_FF', phone:'7654321098', players:'3', teamMembers:['ShadowHunter', 'DarkNinja'], paymentStatus:'pending', competitionAllowed:false, time: new Date(Date.now()-9*3600000).toISOString() },
+  { id:'d4', squadName:'Thunder Bolt',   leaderName:'ZeusX',        uid:'321654987', igName:'ZeusX_FF',   phone:'6543210987', players:'4', teamMembers:['Thor_Bolt', 'LightStrike', 'Thunder_King'], paymentStatus:'pending', competitionAllowed:false, time: new Date(Date.now()-12*3600000).toISOString() },
+  { id:'d5', squadName:'Iron Fist',      leaderName:'SteelWall',    uid:'654321789', igName:'SteelWall01', phone:'5432109876', players:'2', teamMembers:['IronKnuckle'], paymentStatus:'paid', competitionAllowed:false, time: new Date(Date.now()-15*3600000).toISOString() },
+];
+
+// ================================================================
+// FIREBASE FIRESTORE HELPERS (used when DEMO_MODE = false)
+// Install Firebase: npm install firebase
+// Or use CDN: uncomment the script tags below
+// ================================================================
+/*
+// Uncomment for real Firebase:
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, query, orderBy }
+  from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const app = initializeApp(FIREBASE_CONFIG);
+const db = getFirestore(app);
+const COLLECTION = 'registrations';
+
+async function firebaseGetAll() {
+  const q = query(collection(db, COLLECTION), orderBy('time','desc'));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+async function firebaseAdd(data) {
+  const docRef = await addDoc(collection(db, COLLECTION), {
+    ...data, time: new Date().toISOString()
+  });
+  return docRef.id;
+}
+async function firebaseDelete(id) {
+  await deleteDoc(doc(db, COLLECTION, id));
+}
+*/
+
+// ================================================================
+// UNIQUE ID GENERATOR
+// ================================================================
+const genId = () => 'reg_' + Date.now() + '_' + Math.random().toString(36).substr(2,6);
+
+// ================================================================
+// REACT HOOKS
+// ================================================================
+const { useState, useEffect, useCallback, useRef } = React;
+
+// ================================================================
+// COMPONENT: Animated Background
+// ================================================================
+function NeonBg() {
+  return (
+    <div style={{position:'fixed',inset:0,zIndex:0,overflow:'hidden',pointerEvents:'none'}}>
+      {/* Radial glows */}
+      <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at 15% 20%,rgba(183,0,255,0.09) 0%,transparent 55%)'}}/>
+      <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at 85% 80%,rgba(255,26,26,0.07) 0%,transparent 55%)'}}/>
+      <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at 50% 50%,rgba(0,245,255,0.03) 0%,transparent 65%)'}}/>
+      {/* Grid */}
+      <div style={{
+        position:'absolute',inset:0,
+        backgroundImage:'linear-gradient(rgba(183,0,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(183,0,255,0.04) 1px,transparent 1px)',
+        backgroundSize:'70px 70px'
+      }}/>
+      {/* Scanline */}
+      <div style={{
+        position:'absolute',top:0,left:0,right:0,height:'2px',
+        background:'linear-gradient(90deg,transparent,rgba(183,0,255,0.6),rgba(255,26,26,0.4),transparent)',
+        animation:'scanline 8s linear infinite',opacity:0.35
+      }}/>
+      {/* Corner accents */}
+      <div style={{position:'absolute',top:0,left:0,width:200,height:200,background:'radial-gradient(circle,rgba(183,0,255,0.08),transparent)',pointerEvents:'none'}}/>
+      <div style={{position:'absolute',bottom:0,right:0,width:200,height:200,background:'radial-gradient(circle,rgba(255,26,26,0.06),transparent)',pointerEvents:'none'}}/>
+    </div>
+  );
+}
+
+// ================================================================
+// COMPONENT: Toast Notifications
+// ================================================================
+function ToastContainer({ toasts, remove }) {
+  const colors = { success:'#00ff64', error:'var(--neon-red)', info:'var(--neon-purple)' };
+  const icons  = { success:'✅', error:'❌', info:'⚡' };
+  return (
+    <div className="toast-container">
+      {toasts.map(t => (
+        <div key={t.id} className={`toast toast-${t.type}`} onClick={() => remove(t.id)}>
+          <div className="toast-icon">{icons[t.type]}</div>
+          <div>
+            <div className="toast-title" style={{color:colors[t.type]}}>{t.title}</div>
+            <div className="toast-msg">{t.msg}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ================================================================
+// COMPONENT: Success Modal
+// ================================================================
+function SuccessModal({ squad, onClose }) {
+  return (
+    <div className="modal-overlay">
+      <div className="modal-card">
+        <div className="modal-trophy">🏆</div>
+        <div className="modal-title">SQUAD REGISTERED!</div>
+        <div className="modal-squad">{squad}</div>
+        <div className="modal-desc">
+          Your squad has been successfully registered for the Free Fire Championship Series 2026.
+        </div>
+
+        {/* Payment Section */}
+        <div style={{
+          background:'rgba(0,255,100,0.08)',
+          border:'1px solid rgba(0,255,100,0.3)',
+          borderRadius:'12px',
+          padding:'20px',
+          marginBottom:'20px'
+        }}>
+          <div style={{
+            fontFamily:'Rajdhani',fontWeight:700,fontSize:14,
+            color:'#00ff64',marginBottom:12,textAlign:'center',
+            textTransform:'uppercase',letterSpacing:1.5
+          }}>
+            💳 PAYMENT REQUIRED
+          </div>
+          
+          <div style={{
+            background:'rgba(255,255,255,0.95)',
+            padding:'16px',
+            borderRadius:'8px',
+            marginBottom:14,
+            textAlign:'center'
+          }}>
+            <div style={{fontSize:11,color:'#333',marginBottom:8,fontWeight:700}}>
+              Scan QR Code to Pay via Google Pay
+            </div>
+            {/* QR Code Placeholder - You can replace with actual QR */}
+            <div style={{
+              width:'160px',
+              height:'160px',
+              background:'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              borderRadius:'8px',
+              margin:'0 auto',
+              display:'flex',
+              alignItems:'center',
+              justifyContent:'center',
+              color:'#fff',
+              fontSize:'48px',
+              fontWeight:900
+            }}>
+              📱
+            </div>
+          </div>
+
+          <div style={{
+            fontSize:13,color:'#00ff64',textAlign:'center',
+            fontFamily:'Rajdhani',fontWeight:700,marginBottom:8
+          }}>
+            Amount: <span style={{fontSize:16}}>₹40</span>
+          </div>
+
+          <div style={{
+            fontSize:11,color:'#00ff64',textAlign:'center',
+            fontFamily:'Rajdhani',lineHeight:1.6
+          }}>
+            Scan the QR code above using Google Pay to complete your payment.
+            <br/>After payment, admin will verify and confirm your team.
+          </div>
+        </div>
+
+        <div className="modal-tags">
+          {['🔥 Stay Hydrated','⚡ Practice Daily','🎯 Aim True','🛡 Team First'].map(t=>(
+            <span key={t} className="modal-tag">{t}</span>
+          ))}
+        </div>
+        <button className="modal-close" onClick={onClose}>CLOSE ✕</button>
+      </div>
+    </div>
+  );
+}
+
+// ================================================================
+// COMPONENT: Navigation Bar
+// ================================================================
+function Navbar({ onRegister, onAdmin }) {
+  return (
+    <nav className="nav">
+      <div className="nav-logo">
+        <span style={{color:'var(--neon-red)'}}>FREE</span>
+        <span style={{color:'var(--neon-purple)'}}>FIRE</span>
+        <span style={{fontSize:11,color:'var(--text-muted)',marginLeft:12,fontWeight:400,letterSpacing:3,fontFamily:'Rajdhani'}}>ESPORTS</span>
+      </div>
+      <div className="nav-links">
+      </div>
+    </nav>
+  );
+}
+
+// ================================================================
+// COMPONENT: Hero Section
+// ================================================================
+function HeroSection({ onRegister, onAdmin }) {
+  const [infoModal, setInfoModal] = useState(null);
+
+  const infoContent = {
+    'Prize Pool': {
+      title: '🏆 PRIZE POOL',
+      content: [
+        { rank: '🥇 1st Prize (Squad)', amount: '200 Rs' },
+        { rank: '🥈 2nd Prize (Squad)', amount: '100 Rs' },
+        { rank: '🥉 3rd Prize (Squad)', amount: '40 Rs' },
+      ]
+    },
+    'Max Teams': {
+      title: '👥 SQUAD INFORMATION',
+      content: [
+        { label: 'Squad Size', value: '4 Members per Squad' },
+        { label: 'Max Teams', value: '12 Squads Total' },
+        { label: 'Total Players', value: '48 Players (4 x 12)' },
+        { label: 'Team Composition', value: 'Leader + 3 Team Members' },
+      ]
+    },
+    'Tournament': {
+      title: '📅 TOURNAMENT SCHEDULE',
+      content: [
+        { label: 'Event Date', value: 'December 2026' },
+        { label: 'Registration Deadline', value: 'Dec 1, 2026' },
+        { label: 'Tournament Start', value: 'Dec 15, 2026' },
+        { label: 'Finals', value: 'Dec 31, 2026' },
+      ]
+    },
+    'Platform': {
+      title: '🎮 PLATFORM REQUIREMENTS',
+      content: [
+        { label: 'Game', value: 'Free Fire Mobile Only' },
+        { label: 'Device', value: 'iOS & Android Only' },
+        { label: 'Requirements', value: 'No Emulators or Scripts Allowed' },
+        { label: 'Note', value: 'Only mobile gamers are allowed to participate' },
+      ]
+    },
+    '& FAQ': {
+      title: '📋 TOURNAMENT RULES',
+      content: [
+        { rule: '✅ No cheating or hacking allowed' },
+        { rule: '✅ No scripts, mods, or external tools permitted' },
+        { rule: '✅ No abusive language or behavior' },
+        { rule: '✅ Fair play and sportsmanship mandatory' },
+        { rule: '✅ Mobile gameplay only - No emulators' },
+        { rule: '✅ All participants must follow game ToS' },
+        { rule: '✅ Violation = Disqualification' },
+      ]
+    },
+  };
+
+  return (
+    <section className="hero">
+      {/* Top fade */}
+      <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at center top,rgba(183,0,255,0.13) 0%,transparent 70%)',zIndex:1,pointerEvents:'none'}}/>
+      {/* Bottom fade */}
+      <div style={{position:'absolute',bottom:0,left:0,right:0,height:'35%',background:'linear-gradient(to top,var(--dark-bg),transparent)',zIndex:1,pointerEvents:'none'}}/>
+
+      <div style={{position:'relative',zIndex:2,maxWidth:960,width:'100%'}}>
+        {/* Live badge */}
+        <div className="hero-badge">
+          <span className="hero-badge-dot"/>
+          <span style={{fontFamily:'Rajdhani',fontWeight:700,fontSize:13,color:'var(--neon-orange)',letterSpacing:3,textTransform:'uppercase'}}>
+            Registration Open · Dec 2026
+          </span>
+        </div>
+
+        {/* Title */}
+        <div style={{marginBottom:20}}>
+          <div className="hero-title-line" style={{color:'#fff',textShadow:'0 0 50px rgba(255,255,255,0.15)'}}>FREE FIRE</div>
+          <div className="hero-title-line hero-title-gradient">CHAMPIONSHIP</div>
+          <div className="hero-title-line" style={{color:'#fff',textShadow:'0 0 50px rgba(255,255,255,0.15)'}}>SERIES 2026</div>
+        </div>
+
+        {/* Description */}
+        <p className="hero-desc">
+          Prove your supremacy. Register your squad. Claim the ultimate championship
+          title and glory on the battleground. Only the strongest survive.
+        </p>
+
+        {/* CTA buttons */}
+        <div style={{display:'flex',gap:16,justifyContent:'center',flexWrap:'wrap',marginBottom:56}}>
+          <button className="btn-primary" style={{animation:'pulse-glow 2.5s ease infinite'}} onClick={onRegister}>
+            🔥 Register Your Squad
+          </button>
+          <button className="btn-secondary" onClick={onAdmin}>
+            👁 Admin Panel
+          </button>
+        </div>
+
+        {/* Stats */}
+        <div className="hero-stats">
+          {[
+            {icon:'🏆', val:'200 Rs',  lbl:'Prize Pool', key:'Prize Pool'},
+            {icon:'👥', val:'12 Squads', lbl:'Max Teams', key:'Max Teams'},
+            {icon:'📅', val:'Dec 2026', lbl:'Tournament', key:'Tournament'},
+            {icon:'🎮', val:'Mobile FF', lbl:'Platform', key:'Platform'},
+            {icon:'📋', val:'Rules', lbl:'& FAQ', key:'& FAQ'},
+          ].map(s => (
+            <div key={s.key} className="hero-stat" onClick={() => setInfoModal(s.key)} style={{cursor:'pointer',transition:'all 0.3s'}}>
+              <div className="hero-stat-icon">{s.icon}</div>
+              <div className="hero-stat-val">{s.val}</div>
+              <div className="hero-stat-lbl">{s.lbl}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Info Modal */}
+      {infoModal && (
+        <div className="modal-overlay" onClick={() => setInfoModal(null)}>
+          <div className="modal-card" onClick={e => e.stopPropagation()}>
+            <div style={{
+              fontFamily:'Orbitron',fontWeight:900,fontSize:24,
+              color:'var(--neon-purple)',marginBottom:24,
+              textAlign:'center',letterSpacing:2,
+              textShadow:'0 0 30px rgba(183,0,255,0.8)'
+            }}>
+              {infoContent[infoModal].title}
+            </div>
+
+            <div style={{marginBottom:24}}>
+              {infoContent[infoModal].content.map((item, idx) => (
+                <div key={idx} style={{marginBottom:16,paddingBottom:12,borderBottom:'1px solid rgba(183,0,255,0.2)'}}>
+                  {item.rank ? (
+                    <>
+                      <div style={{fontFamily:'Rajdhani',fontWeight:700,fontSize:16,color:'var(--neon-purple)',marginBottom:4}}>
+                        {item.rank}
+                      </div>
+                      <div style={{fontSize:18,color:'var(--neon-gold)',fontFamily:'Orbitron',fontWeight:700}}>
+                        {item.amount}
+                      </div>
+                    </>
+                  ) : item.label ? (
+                    <>
+                      <div style={{fontSize:12,color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:1.5,marginBottom:4}}>
+                        {item.label}
+                      </div>
+                      <div style={{fontSize:16,color:'#fff',fontFamily:'Rajdhani',fontWeight:700}}>
+                        {item.value}
+                      </div>
+                    </>
+                  ) : item.rule ? (
+                    <div style={{fontSize:14,color:'#fff',fontFamily:'Rajdhani',lineHeight:1.8}}>
+                      {item.rule}
+                    </div>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+
+            <button className="modal-close" onClick={() => setInfoModal(null)}>
+              CLOSE ✕
+            </button>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+// ================================================================
+// COMPONENT: Prize Pool Section
+// ================================================================
+function PrizeSection() {
+  const prizes = [
+    { rank:'1st Place', prize:'200 Rs', trophy:'🥇', color:'#ffd700', glow:'rgba(255,215,0,0.35)' },
+    { rank:'2nd Place', prize:'100 Rs', trophy:'🥈', color:'#c0c0c0', glow:'rgba(192,192,192,0.35)' },
+    { rank:'3rd Place', prize:'40 Rs',  trophy:'🥉', color:'#cd7f32', glow:'rgba(205,127,50,0.35)' },
+    { rank:'MVP Award', prize:'60 Rs',  trophy:'⭐', color:'#b700ff', glow:'rgba(183,0,255,0.35)' },
+  ];
+  return (
+    <section className="prize-section">
+      <div className="section-title">🏆 PRIZE <span style={{color:'var(--neon-red)'}}>POOL</span></div>
+      <div className="section-sub">Top squads take home the glory and the gold</div>
+      <div className="prize-cards">
+        {prizes.map(p => (
+          <div key={p.rank} className="prize-card" style={{
+            border:`1px solid ${p.glow.replace('0.35','0.5')}`,
+            boxShadow:`0 0 40px ${p.glow}`,
+            color:p.color
+          }}>
+            <div className="prize-icon">{p.trophy}</div>
+            <div className="prize-rank">{p.rank}</div>
+            <div className="prize-amount" style={{textShadow:`0 0 25px ${p.glow}`}}>{p.prize}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ================================================================
+// COMPONENT: How It Works Section
+// ================================================================
+function HowItWorks() {
+  const steps = [
+    { num:'01', icon:'📝', title:'Fill Form', desc:'Enter your squad details, UID, and contact information accurately.' },
+    { num:'02', icon:'✅', title:'Get Confirmed', desc:'Receive instant confirmation. Your squad is now in the tournament.' },
+    { num:'03', icon:'🎮', title:'Practice Hard', desc:'Sharpen your skills and strategies before the big day.' },
+    { num:'04', icon:'🏆', title:'Compete & Win', desc:'Battle it out and claim the championship title and prize pool.' },
+  ];
+  return (
+    <section className="how-section">
+      <div className="section-title">HOW TO <span style={{color:'var(--neon-purple)'}}>PARTICIPATE</span></div>
+      <div className="section-sub">Get registered in 4 easy steps and prepare for battle</div>
+      <div className="how-steps">
+        {steps.map((s,i) => (
+          <div key={s.num} className="how-step" style={{animationDelay:`${i*0.1}s`}}>
+            <div className="how-step-num">{s.num}</div>
+            <div className="how-step-icon">{s.icon}</div>
+            <div className="how-step-title">{s.title}</div>
+            <div className="how-step-desc">{s.desc}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ================================================================
+// COMPONENT: Registration Form
+// ================================================================
+function RegistrationForm({ onSubmit, loading }) {
+  const [form, setForm] = useState({
+    squadName:'', leaderName:'', uid:'', igName:'', phone:'', players:'4', teamMembers: ['', '', '']
+  });
+  const [errors, setErrors] = useState({});
+
+  const set = (k, v) => {
+    if (k === 'players') {
+      const numPlayers = parseInt(v);
+      const membersNeeded = Math.max(0, numPlayers - 1);
+      const newMembers = [...form.teamMembers].slice(0, membersNeeded);
+      while (newMembers.length < membersNeeded) {
+        newMembers.push('');
+      }
+      setForm(f => ({...f, [k]: v, teamMembers: newMembers}));
+    } else {
+      setForm(f => ({...f, [k]: v}));
+    }
+  };
+
+  const setTeamMember = (index, value) => {
+    const newMembers = [...form.teamMembers];
+    newMembers[index] = value;
+    setForm(f => ({...f, teamMembers: newMembers}));
+  };
+
+  const validate = () => {
+    const e = {};
+    if (!form.squadName.trim())           e.squadName  = 'Squad name is required';
+    if (!form.leaderName.trim())          e.leaderName = 'Leader name is required';
+    if (!/^\d{9,12}$/.test(form.uid))    e.uid        = 'Enter a valid UID (9–12 digits)';
+    if (!form.igName.trim())              e.igName     = 'In-game name is required';
+    if (!/^\d{10}$/.test(form.phone))    e.phone      = 'Enter a valid 10-digit phone number';
+    if (!form.players)                    e.players    = 'Select number of players';
+    
+    // Validate team members
+    const numPlayers = parseInt(form.players);
+    if (numPlayers > 1) {
+      for (let i = 0; i < form.teamMembers.length; i++) {
+        if (!form.teamMembers[i].trim()) {
+          e[`member${i}`] = 'Team member name is required';
+        }
+      }
+    }
+    
+    return e;
+  };
+
+  const handleSubmit = () => {
+    const e = validate();
+    setErrors(e);
+    if (Object.keys(e).length === 0) onSubmit(form);
+  };
+
+  const inputClass = (k) => `field-input${errors[k] ? ' error' : ''}`;
+
+  return (
+    <section id="register" className="reg-section">
+      <div className="section-title">SQUAD <span style={{color:'var(--neon-red)'}}>REGISTRATION</span></div>
+      <div className="section-sub">Fill in your squad details to enter the championship</div>
+
+      <div className="reg-card">
+        {/* Decorative corners */}
+        <div style={{position:'absolute',top:14,left:14,width:20,height:20,borderTop:'2px solid var(--neon-purple)',borderLeft:'2px solid var(--neon-purple)',borderRadius:'2px 0 0 0'}}/>
+        <div style={{position:'absolute',top:14,right:14,width:20,height:20,borderTop:'2px solid var(--neon-purple)',borderRight:'2px solid var(--neon-purple)',borderRadius:'0 2px 0 0'}}/>
+        <div style={{position:'absolute',bottom:14,left:14,width:20,height:20,borderBottom:'2px solid var(--neon-purple)',borderLeft:'2px solid var(--neon-purple)',borderRadius:'0 0 0 2px'}}/>
+        <div style={{position:'absolute',bottom:14,right:14,width:20,height:20,borderBottom:'2px solid var(--neon-purple)',borderRight:'2px solid var(--neon-purple)',borderRadius:'0 0 2px 0'}}/>
+
+        <div style={{position:'relative'}}>
+          <div className="reg-grid">
+            {/* Squad Name */}
+            <div className="field">
+              <label className="field-label">🛡 Squad Name</label>
+              <input className={inputClass('squadName')} placeholder="e.g. Shadow Wolves"
+                value={form.squadName} onChange={e=>set('squadName',e.target.value)}/>
+              {errors.squadName && <div className="field-error">⚠ {errors.squadName}</div>}
+            </div>
+
+            {/* Leader Name */}
+            <div className="field">
+              <label className="field-label">👑 Team Leader Name</label>
+              <input className={inputClass('leaderName')} placeholder="Leader's real / game name"
+                value={form.leaderName} onChange={e=>set('leaderName',e.target.value)}/>
+              {errors.leaderName && <div className="field-error">⚠ {errors.leaderName}</div>}
+            </div>
+
+            {/* Free Fire UID */}
+            <div className="field">
+              <label className="field-label">🆔 Free Fire UID</label>
+              <input className={inputClass('uid')} placeholder="9–12 digit UID" type="text" inputMode="numeric"
+                value={form.uid} onChange={e=>set('uid',e.target.value.replace(/\D/g,''))}/>
+              {errors.uid && <div className="field-error">⚠ {errors.uid}</div>}
+            </div>
+
+            {/* In-Game Name */}
+            <div className="field">
+              <label className="field-label">🎮 In-Game Name (IGN)</label>
+              <input className={inputClass('igName')} placeholder="Your in-game display name"
+                value={form.igName} onChange={e=>set('igName',e.target.value)}/>
+              {errors.igName && <div className="field-error">⚠ {errors.igName}</div>}
+            </div>
+
+            {/* Phone Number */}
+            <div className="field">
+              <label className="field-label">📱 Phone Number</label>
+              <input className={inputClass('phone')} placeholder="10-digit mobile number" type="tel" inputMode="numeric"
+                value={form.phone} onChange={e=>set('phone',e.target.value.replace(/\D/g,'').slice(0,10))}/>
+              {errors.phone && <div className="field-error">⚠ {errors.phone}</div>}
+            </div>
+
+            {/* Number of Players */}
+            <div className="field">
+              <label className="field-label">👥 Number of Players</label>
+              <select className={inputClass('players')} value={form.players} onChange={e=>set('players',e.target.value)}>
+                <option value="1">1 – Solo</option>
+                <option value="2">2 – Duo</option>
+                <option value="3">3 – Trio</option>
+                <option value="4">4 – Squad (Full)</option>
+              </select>
+              {errors.players && <div className="field-error">⚠ {errors.players}</div>}
+            </div>
+          </div>
+
+          {/* Team Members Section */}
+          {parseInt(form.players) > 1 && (
+            <div style={{marginTop:'30px', paddingTop:'30px', borderTop:'1px solid rgba(183,0,255,0.15)'}}>
+              <div style={{
+                fontFamily:'Orbitron',fontWeight:900,fontSize:18,
+                color:'var(--neon-purple)',marginBottom:20,
+                textAlign:'center',letterSpacing:2,textTransform:'uppercase'
+              }}>
+                ⚡ Add Your Team Members
+              </div>
+              
+              <div className="reg-grid">
+                {form.teamMembers.map((member, index) => (
+                  <div key={index} className="field">
+                    <label className="field-label">
+                      🎯 Player {index + 2} Name
+                    </label>
+                    <input 
+                      className={`field-input${errors[`member${index}`] ? ' error' : ''}`}
+                      placeholder={`Team member ${index + 2} name`}
+                      value={member}
+                      onChange={e => setTeamMember(index, e.target.value)}
+                    />
+                    {errors[`member${index}`] && (
+                      <div className="field-error">⚠ {errors[`member${index}`]}</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Submit */}
+          <button className="submit-btn" onClick={handleSubmit} disabled={loading}>
+            {loading ? '⚡ REGISTERING YOUR SQUAD...' : '🔥 REGISTER SQUAD NOW'}
+          </button>
+
+          <div style={{textAlign:'center',marginTop:16,fontSize:12,color:'var(--text-muted)',fontFamily:'Rajdhani'}}>
+            By registering you agree to the tournament rules and code of conduct.
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ================================================================
+// COMPONENT: Admin Login Form
+// ================================================================
+function AdminLogin({ onLogin }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const handleLogin = () => {
+    const ADMIN_USER = 'admin';
+    const ADMIN_PASS = 'admin123';
+
+    if (username === ADMIN_USER && password === ADMIN_PASS) {
+      setError('');
+      onLogin(true);
+    } else {
+      setError('Invalid username or password');
+      setPassword('');
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') handleLogin();
+  };
+
+  return (
+    <div className="admin-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+      <div style={{
+        background: 'rgba(8,4,20,0.95)',
+        border: '1px solid rgba(183,0,255,0.4)',
+        borderRadius: '18px',
+        padding: '60px 50px',
+        backdropFilter: 'blur(24px)',
+        boxShadow: '0 0 60px rgba(183,0,255,0.15)',
+        maxWidth: '420px',
+        width: '90%',
+        textAlign: 'center',
+      }}>
+        <div style={{
+          fontSize: '48px',
+          marginBottom: '20px',
+        }}>🔐</div>
+        
+        <div style={{
+          fontFamily: 'Orbitron, sans-serif',
+          fontWeight: 900,
+          fontSize: '28px',
+          color: '#fff',
+          marginBottom: '10px',
+        }}>ADMIN LOGIN</div>
+        
+        <div style={{
+          fontFamily: 'Rajdhani, sans-serif',
+          fontSize: '14px',
+          color: 'var(--text-muted)',
+          marginBottom: '32px',
+        }}>Enter your credentials to access the admin panel</div>
+
+        {error && (
+          <div style={{
+            background: 'rgba(255,26,26,0.1)',
+            border: '1px solid rgba(255,26,26,0.4)',
+            borderRadius: '8px',
+            padding: '12px',
+            color: 'var(--neon-red)',
+            fontSize: '13px',
+            marginBottom: '20px',
+            fontFamily: 'Rajdhani',
+          }}>
+            ⚠ {error}
+          </div>
+        )}
+
+        <div style={{ marginBottom: '20px', textAlign: 'left' }}>
+          <label style={{
+            display: 'block',
+            fontFamily: 'Rajdhani, sans-serif',
+            fontWeight: 700,
+            fontSize: '12px',
+            color: 'var(--neon-purple)',
+            letterSpacing: '2.5px',
+            textTransform: 'uppercase',
+            marginBottom: '8px',
+          }}>👤 Username</label>
+          <input
+            type="text"
+            placeholder="admin"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+            onKeyPress={handleKeyPress}
+            style={{
+              width: '100%',
+              padding: '13px 18px',
+              borderRadius: '10px',
+              background: 'rgba(8,4,22,0.8)',
+              border: '1px solid rgba(183,0,255,0.25)',
+              color: 'var(--text-primary)',
+              fontFamily: 'Exo 2, sans-serif',
+              fontSize: '15px',
+              boxSizing: 'border-box',
+              transition: 'all 0.3s',
+            }}
+            onFocus={e => e.target.style.borderColor = 'var(--neon-purple)'}
+            onBlur={e => e.target.style.borderColor = 'rgba(183,0,255,0.25)'}
+          />
+        </div>
+
+        <div style={{ marginBottom: '28px', textAlign: 'left' }}>
+          <label style={{
+            display: 'block',
+            fontFamily: 'Rajdhani, sans-serif',
+            fontWeight: 700,
+            fontSize: '12px',
+            color: 'var(--neon-purple)',
+            letterSpacing: '2.5px',
+            textTransform: 'uppercase',
+            marginBottom: '8px',
+          }}>🔑 Password</label>
+          <input
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            onKeyPress={handleKeyPress}
+            style={{
+              width: '100%',
+              padding: '13px 18px',
+              borderRadius: '10px',
+              background: 'rgba(8,4,22,0.8)',
+              border: '1px solid rgba(183,0,255,0.25)',
+              color: 'var(--text-primary)',
+              fontFamily: 'Exo 2, sans-serif',
+              fontSize: '15px',
+              boxSizing: 'border-box',
+              transition: 'all 0.3s',
+            }}
+            onFocus={e => e.target.style.borderColor = 'var(--neon-purple)'}
+            onBlur={e => e.target.style.borderColor = 'rgba(183,0,255,0.25)'}
+          />
+        </div>
+
+        <button
+          onClick={handleLogin}
+          style={{
+            width: '100%',
+            padding: '15px',
+            borderRadius: '10px',
+            background: 'linear-gradient(135deg, #ff1a1a 0%, #8800dd 50%, #ff1a1a 100%)',
+            backgroundSize: '200% 200%',
+            fontFamily: 'Orbitron, sans-serif',
+            fontWeight: 700,
+            fontSize: '14px',
+            color: '#fff',
+            letterSpacing: '2px',
+            border: 'none',
+            cursor: 'pointer',
+            textTransform: 'uppercase',
+            boxShadow: '0 0 30px rgba(183,0,255,0.3)',
+            transition: 'all 0.3s',
+          }}
+          onMouseEnter={e => e.target.style.boxShadow = '0 0 50px rgba(183,0,255,0.6)'}
+          onMouseLeave={e => e.target.style.boxShadow = '0 0 30px rgba(183,0,255,0.3)'}
+        >
+          🔓 LOGIN
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ================================================================
+// COMPONENT: Admin Panel
+// ================================================================
+function AdminPanel({ regs, onDelete, onBack, onLogout, onAllowCompetition }) {
+  const [search,  setSearch]  = useState('');
+  const [filter,  setFilter]  = useState('all');
+  const [delId,   setDelId]   = useState(null);
+
+  const filtered = regs.filter(r => {
+    const q = search.toLowerCase();
+    const matchQ = !q
+      || r.squadName?.toLowerCase().includes(q)
+      || r.leaderName?.toLowerCase().includes(q)
+      || r.uid?.includes(q)
+      || r.igName?.toLowerCase().includes(q)
+      || r.phone?.includes(q);
+    const matchF = filter === 'all'
+      || (filter === 'solo'  && r.players === '1')
+      || (filter === 'duo'   && r.players === '2')
+      || (filter === 'trio'  && r.players === '3')
+      || (filter === 'squad' && r.players === '4');
+    return matchQ && matchF;
+  });
+
+  const fmt = d => {
+    try {
+      return new Date(d).toLocaleString('en-IN', {
+        day:'2-digit', month:'short', year:'numeric',
+        hour:'2-digit', minute:'2-digit'
+      });
+    } catch { return d; }
+  };
+
+  const counts = {
+    total: regs.length,
+    solo:  regs.filter(r=>r.players==='1').length,
+    duo:   regs.filter(r=>r.players==='2').length,
+    trio:  regs.filter(r=>r.players==='3').length,
+    squad: regs.filter(r=>r.players==='4').length,
+  };
+
+  return (
+    <div className="admin-wrapper">
+      {/* Header */}
+      <div className="admin-header">
+        <button className="admin-back" onClick={onBack}>← Back to Home</button>
+        <div className="admin-title-block">
+          <div className="admin-title">⚔️ ADMIN <span style={{color:'var(--neon-purple)'}}>PANEL</span></div>
+          <div className="admin-subtitle">Manage all registered squads · Demo Mode: {DEMO_MODE ? 'ON' : 'OFF'}</div>
+        </div>
+        <button className="admin-back" onClick={onLogout} style={{marginLeft:'auto',background:'rgba(255,26,26,0.15)',borderColor:'rgba(255,26,26,0.4)',color:'var(--neon-red)'}}>🚪 LOGOUT</button>
+      </div>
+
+      {/* Stats Bar */}
+      <div className="stats-bar">
+        {[
+          {lbl:'Total Squads', val:counts.total},
+          {lbl:'Full Squads',  val:counts.squad},
+          {lbl:'Trios',        val:counts.trio},
+          {lbl:'Duos',         val:counts.duo},
+          {lbl:'Solos',        val:counts.solo},
+        ].map(s=>(
+          <div key={s.lbl} className="stat-card">
+            <div className="stat-card-val">{s.val}</div>
+            <div className="stat-card-lbl">{s.lbl}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Controls */}
+      <div className="admin-controls">
+        <div className="admin-search-wrap">
+          <span className="admin-search-icon">🔍</span>
+          <input className="admin-search" placeholder="Search by squad, leader, UID, IGN or phone…"
+            value={search} onChange={e=>setSearch(e.target.value)}/>
+        </div>
+      </div>
+
+      <div className="filter-group" style={{marginBottom:20}}>
+        <span className="filter-label">Filter:</span>
+        {['all','solo','duo','trio','squad'].map(f=>(
+          <button key={f} className={`filter-btn${filter===f?' active':''}`} onClick={()=>setFilter(f)}>
+            {f}
+          </button>
+        ))}
+      </div>
+
+      {/* Table */}
+      {filtered.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-icon">😶</div>
+          <div className="empty-text">No registrations found</div>
+        </div>
+      ) : (
+        <div className="table-wrap">
+          <table className="reg-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Squad Name</th>
+                <th>Leader Name</th>
+                <th>Free Fire UID</th>
+                <th>IGN</th>
+                <th>Phone</th>
+                <th>Players</th>
+                <th>Payment</th>
+                <th>Status</th>
+                <th>Team Members</th>
+                <th>Registered At</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((r, i) => (
+                <tr key={r.id} style={{animationDelay:`${i*0.04}s`}}>
+                  <td style={{color:'var(--text-muted)',fontSize:12}}>{i+1}</td>
+                  <td><span className="squad-name">{r.squadName}</span></td>
+                  <td>{r.leaderName}</td>
+                  <td><span className="uid-text">{r.uid}</span></td>
+                  <td style={{color:'var(--text-muted)'}}>{r.igName}</td>
+                  <td style={{color:'var(--text-muted)'}}>{r.phone}</td>
+                  <td><span className="players-badge">{r.players}P</span></td>
+                  <td style={{fontSize:12,fontWeight:700}}>
+                    <span style={{
+                      padding:'4px 10px',
+                      borderRadius:'6px',
+                      background:r.paymentStatus==='paid'?'rgba(0,255,100,0.15)':'rgba(255,26,26,0.15)',
+                      color:r.paymentStatus==='paid'?'#00ff64':'var(--neon-red)',
+                      textTransform:'uppercase'
+                    }}>
+                      {r.paymentStatus==='paid'?'✅ Paid':'⏳ Pending'}
+                    </span>
+                  </td>
+                  <td style={{fontSize:12,fontWeight:700}}>
+                    <span style={{
+                      padding:'4px 10px',
+                      borderRadius:'6px',
+                      background:r.competitionAllowed?'rgba(0,255,100,0.15)':'rgba(183,0,255,0.15)',
+                      color:r.competitionAllowed?'#00ff64':'var(--neon-purple)',
+                      textTransform:'uppercase'
+                    }}>
+                      {r.competitionAllowed?'✅ Allowed':'⏳ Pending'}
+                    </span>
+                  </td>
+                  <td style={{fontSize:12,color:'var(--text-muted)'}}>
+                    {r.teamMembers && r.teamMembers.length > 0 
+                      ? r.teamMembers.join(', ') 
+                      : '—'}
+                  </td>
+                  <td><span className="time-text">{fmt(r.time)}</span></td>
+                  <td style={{display:'flex',gap:8,flexDirection:'column'}}>
+                    {r.paymentStatus==='pending' && (
+                      <button style={{
+                        padding:'6px 12px',
+                        borderRadius:'6px',
+                        background:'linear-gradient(135deg, #00a8ff, #0080cc)',
+                        color:'#fff',
+                        fontFamily:'Rajdhani',fontWeight:700,
+                        fontSize:11,
+                        cursor:'pointer',
+                        border:'none',
+                        textTransform:'uppercase',
+                        transition:'all 0.3s'
+                      }} onClick={()=>{
+                        const reg = regs.find(x => x.id === r.id);
+                        if (reg) {
+                          reg.paymentStatus = 'paid';
+                          setRegs([...regs]);
+                        }
+                      }} title="Mark payment as verified">
+                        💳 Verify
+                      </button>
+                    )}
+                    {r.paymentStatus==='paid' && !r.competitionAllowed && (
+                      <button style={{
+                        padding:'6px 12px',
+                        borderRadius:'6px',
+                        background:'linear-gradient(135deg, #00ff64, #00cc52)',
+                        color:'#000',
+                        fontFamily:'Rajdhani',fontWeight:700,
+                        fontSize:11,
+                        cursor:'pointer',
+                        border:'none',
+                        textTransform:'uppercase',
+                        transition:'all 0.3s'
+                      }} onClick={()=>onAllowCompetition(r.id)} title="Allow this squad for competition">
+                        ✓ Allow
+                      </button>
+                    )}
+                    <button className="delete-btn" onClick={()=>setDelId(r.id)} title="Delete registration">
+                      🗑
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Delete Confirm Modal */}
+      {delId && (
+        <div className="confirm-overlay">
+          <div className="confirm-card">
+            <div className="confirm-icon">⚠️</div>
+            <div className="confirm-title">DELETE REGISTRATION?</div>
+            <div className="confirm-text">
+              This squad will be permanently removed from the tournament roster.
+              This action cannot be undone.
+            </div>
+            <div className="confirm-btns">
+              <button className="confirm-cancel" onClick={()=>setDelId(null)}>CANCEL</button>
+              <button className="confirm-delete" onClick={()=>{ onDelete(delId); setDelId(null); }}>
+                DELETE
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ================================================================
+// COMPONENT: Footer
+// ================================================================
+function Footer() {
+  return (
+    <footer className="footer">
+      <div className="footer-logo">FREE FIRE ESPORTS</div>
+      <div className="footer-text">Championship Series 2026 · All Rights Reserved</div>
+      <div className="footer-text" style={{marginBottom:12}}>
+        📧 admin@ffesports.in &nbsp;|&nbsp; 📱 +91 98765 43210 &nbsp;|&nbsp; 📍 India
+      </div>
+      <div className="footer-credit">⚡ Powered by React + Firebase · Built for Champions</div>
+    </footer>
+  );
+}
+
+// ================================================================
+// MAIN APP COMPONENT
+// ================================================================
+function App() {
+  const [page,         setPage]         = useState('home');
+  const [isAdminAuth,  setIsAdminAuth]  = useState(false);
+  const [regs,         setRegs]         = useState(DEMO_DB);
+  const [toasts,       setToasts]       = useState([]);
+  const [loading,      setLoading]      = useState(false);
+  const [successSquad, setSuccessSquad] = useState(null);
+
+  // Add toast helper
+  const addToast = useCallback((title, msg, type = 'info') => {
+    const id = Date.now();
+    setToasts(t => [...t, { id, title, msg, type }]);
+    setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 4500);
+  }, []);
+
+  const removeToast = useCallback(id => {
+    setToasts(t => t.filter(x => x.id !== id));
+  }, []);
+
+  // Submit registration
+  const handleSubmit = async (form) => {
+    setLoading(true);
+    try {
+      if (DEMO_MODE) {
+        // Simulate network delay
+        await new Promise(r => setTimeout(r, 1500));
+        const newReg = { id: genId(), ...form, paymentStatus: 'pending', competitionAllowed: false, time: new Date().toISOString() };
+        DEMO_DB = [newReg, ...DEMO_DB];
+        setRegs([...DEMO_DB]);
+      } else {
+        // Real Firebase call – uncomment and configure
+        // const id = await firebaseAdd(form);
+        // const newReg = { id, ...form, paymentStatus: 'pending', competitionAllowed: false, time: new Date().toISOString() };
+        // setRegs(r => [newReg, ...r]);
+      }
+      setSuccessSquad(form.squadName);
+      addToast('Registration Complete!', `${form.squadName} is now in the tournament!`, 'success');
+    } catch (err) {
+      addToast('Error!', 'Registration failed. Please try again.', 'error');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Allow squad for competition
+  const handleAllowCompetition = async (id) => {
+    try {
+      if (DEMO_MODE) {
+        const reg = DEMO_DB.find(r => r.id === id);
+        if (reg) {
+          reg.competitionAllowed = true;
+          setRegs([...DEMO_DB]);
+          addToast('Approved!', `Squad approved for competition.`, 'success');
+        }
+      }
+    } catch (err) {
+      addToast('Error!', 'Could not approve squad.', 'error');
+      console.error(err);
+    }
+  };
+
+  // Delete registration
+  const handleDelete = async (id) => {
+    try {
+      if (DEMO_MODE) {
+        DEMO_DB = DEMO_DB.filter(r => r.id !== id);
+        setRegs([...DEMO_DB]);
+      } else {
+        // await firebaseDelete(id);
+        // setRegs(r => r.filter(x => x.id !== id));
+      }
+      addToast('Deleted', 'Squad removed from the tournament.', 'error');
+    } catch (err) {
+      addToast('Error!', 'Could not delete. Try again.', 'error');
+      console.error(err);
+    }
+  };
+
+  // Scroll to form
+  const scrollToReg = () => {
+    setTimeout(() => {
+      const el = document.getElementById('register');
+      if (el) el.scrollIntoView({ behavior:'smooth' });
+    }, 50);
+  };
+
+  // Admin page
+  if (page === 'admin') {
+    return (
+      <>
+        <NeonBg/>
+        <div style={{position:'relative',zIndex:2,paddingTop:20}}>
+          {!isAdminAuth ? (
+            <AdminLogin onLogin={() => setIsAdminAuth(true)}/>
+          ) : (
+            <AdminPanel regs={regs} onDelete={handleDelete} onAllowCompetition={handleAllowCompetition} onBack={() => { setPage('home'); setIsAdminAuth(false); }} onLogout={() => { setPage('home'); setIsAdminAuth(false); }}/>
+          )}
+        </div>
+        <ToastContainer toasts={toasts} remove={removeToast}/>
+      </>
+    );
+  }
+
+  // Home page
+  return (
+    <>
+      <NeonBg/>
+      <Navbar onRegister={scrollToReg} onAdmin={() => setPage('admin')}/>
+      <div style={{position:'relative',zIndex:2}}>
+        <HeroSection onRegister={scrollToReg} onAdmin={() => setPage('admin')}/>
+        <PrizeSection/>
+        <HowItWorks/>
+        <RegistrationForm onSubmit={handleSubmit} loading={loading}/>
+        <Footer/>
+      </div>
+      {successSquad && (
+        <SuccessModal squad={successSquad} onClose={() => setSuccessSquad(null)}/>
+      )}
+      <ToastContainer toasts={toasts} remove={removeToast}/>
+    </>
+  );
+}
+
+// ================================================================
+// MOUNT APP
+// ================================================================
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

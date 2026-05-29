@@ -1,0 +1,7 @@
+# Ignore node modules and build artifacts
+node_modules/
+ESPORT/node_modules/
+ESPORT/.vite/
+/.vite/
+.DS_Store
+.vscode/
